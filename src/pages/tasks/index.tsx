@@ -173,6 +173,9 @@ const TaskPage: React.FC = (): JSX.Element => {
           <Button className="bg-blue-600" onClick={() => setIsOpenModal(true)}>
             Add Tasks
           </Button>
+          <Button className="bg-blue-600" onClick={() => navigate("/")}>
+            Board
+          </Button>
           <Button className="bg-red-500" onClick={handleLogout}>
             Logout
           </Button>
