@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -10,9 +11,9 @@ import {
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { PiPencil } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { API } from "@/lib/axios";
-import { IBoard } from "@/interfaces/board.interfaces";
+import { IBoard, IMoveTask } from "@/interfaces/board.interfaces";
 import Modal from "@/components/Moleculs/Modal";
 import InputCustom from "@/components/Moleculs/InputCustom";
 import { useFormik } from "formik";
@@ -46,6 +47,32 @@ const TaskPage: React.FC = (): JSX.Element => {
   const [isLoadDelete, setIsLoadDelete] = useState<boolean>(false);
   // const [selectedBoard, setSelectedBoard] = useState<IBoard | null>(null);
   const [selectedTask, setSelectedTask] = useState<ITask | null>(null);
+  const dragRef = useRef<number>(0);
+  const draggedOverRef = useRef<number>(0);
+
+  const handleMoveTask = async (body: IMoveTask) => {
+    try {
+      const resp = await API.post("/task/move", body);
+      console.log(resp?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDrag = (item: ITask) => {
+    const taskClone = task?.data || [];
+    const temp = taskClone[dragRef.current];
+    taskClone[dragRef.current] = taskClone[draggedOverRef.current];
+    taskClone[draggedOverRef.current] = temp;
+    setTask((prev: any) => {
+      const currentTask = prev || { data: [] };
+      return {
+        ...currentTask,
+        data: taskClone,
+      };
+    });
+    handleMoveTask(item);
+  };
 
   const [boards, setBoards] = useState<Options[] | null>(null);
 
@@ -165,7 +192,14 @@ const TaskPage: React.FC = (): JSX.Element => {
 
         <TableBody>
           {task?.data?.map((item: ITask, idx: number) => (
-            <TableRow key={idx}>
+            <TableRow
+              key={idx}
+              draggable
+              onDragStart={() => (dragRef.current = idx)}
+              onDragEnter={() => (draggedOverRef.current = idx)}
+              onDragEnd={() => handleDrag(item)}
+              onDragOver={(e) => e.preventDefault()}
+            >
               <TableCell className="font-medium">{idx + 1}</TableCell>
               <TableCell>{item?.name}</TableCell>
               <TableCell className="w-[300px]">

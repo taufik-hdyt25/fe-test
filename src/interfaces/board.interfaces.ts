@@ -23,3 +23,9 @@ export interface IPostBoard {
   start_date: string;
   end_date: string;
 }
+
+export interface IMoveTask {
+  id: string;
+
+  board_id: string;
+}
