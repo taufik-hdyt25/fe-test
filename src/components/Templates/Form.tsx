@@ -29,8 +29,10 @@ const Form: React.FC<IForm> = ({ activeTab, setActiveTab }) => {
           description: "",
           className: "bg-green-500 text-white",
         });
+        const token = resp?.data?.token;
+        localStorage.setItem("token", token);
+        API.defaults.headers.common["Authorization"] = `Bearer ${token}`;
         navigation("/");
-        localStorage.setItem("token", resp?.data?.token);
       } else {
         toast({
           title: resp?.data?.message,
