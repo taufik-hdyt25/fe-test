@@ -10,6 +10,7 @@ import * as Yup from "yup";
 
 export const useBoardAction = () => {
   const { toast } = useToast();
+  const [openAlert, setOpenAlert] = useState("");
   const [selectedBoard, setSelectedBoard] = useState<IBoard | null>(null);
   const [isModalAddTask, setIsModalAddTask] = useState<boolean>(false);
   const [isModalAddBoard, setModalAddBoard] = useState<boolean>(false);
@@ -119,6 +120,7 @@ export const useBoardAction = () => {
   const onOpenAlert = (item: ITaskInBoard) => {
     setSelectedTask(item);
     setIsOpenAlert(true);
+    setOpenAlert("task");
   };
 
   const openModalUpdate = (item: ITaskInBoard) => {
@@ -249,5 +251,7 @@ export const useBoardAction = () => {
     handleDeleteBoard,
     isLoadDeleteBoard,
     selectedTask,
+    setOpenAlert,
+    openAlert,
   };
 };

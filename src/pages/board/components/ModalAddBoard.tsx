@@ -13,9 +13,11 @@ interface IModalProps {
   selectedBoard?: IBoard | null;
   setOpenModal: (i: boolean) => void;
   setSelectedBoard: () => void;
-  setIsOpenAlert: () => void;
+  setIsOpenAlert: (i: boolean) => void;
   onCancel: () => void;
+  setOpenAlert: (i: string) => void;
 }
+
 const ModalAddBoard: React.FC<IModalProps> = ({
   isOpen,
   setOpenModal,
@@ -25,6 +27,7 @@ const ModalAddBoard: React.FC<IModalProps> = ({
   setSelectedBoard,
   setIsOpenAlert,
   onCancel,
+  setOpenAlert,
 }): JSX.Element => {
   return (
     <Modal
@@ -84,7 +87,10 @@ const ModalAddBoard: React.FC<IModalProps> = ({
           {selectedBoard && (
             <div>
               <AiFillDelete
-                onClick={setIsOpenAlert}
+                onClick={() => {
+                  setOpenAlert("board");
+                  setIsOpenAlert(true);
+                }}
                 size={24}
                 color="red"
                 className="cursor-pointer"
