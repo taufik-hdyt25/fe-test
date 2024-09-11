@@ -55,7 +55,7 @@ const BoardPage: React.FC = (): JSX.Element => {
   };
 
   return (
-    <div className="h-screen">
+    <div className="h-screen ">
       <div className="flex justify-between my-3 px-5">
         <div className="text-lg font-semibold text-blue-400">TODO</div>
 
@@ -72,7 +72,7 @@ const BoardPage: React.FC = (): JSX.Element => {
         </div>
       </div>
 
-      <div className="flex gap-3 mt-10 overflow-x-auto px-5">
+      <div className="flex gap-3 mt-10 overflow-x-visible px-5 pb-10">
         <DragDropContext onDragEnd={handleOnDragEnd}>
           {boards?.map((item: IBoard, idx: number) => (
             <Droppable droppableId={item.id} key={item.id}>
