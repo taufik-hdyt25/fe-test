@@ -4,6 +4,7 @@ import Modal from "@/components/Moleculs/Modal";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
+import { ITaskInBoard } from "@/interfaces/task.interfaces";
 import { FaSpinner } from "react-icons/fa";
 
 interface IModalProps {
@@ -12,6 +13,7 @@ interface IModalProps {
   isLoadAddTask: boolean;
   onClose: () => void;
   onCancel: () => void;
+  selectedTask: ITaskInBoard | null;
 }
 
 const ModalAddTask: React.FC<IModalProps> = ({
@@ -21,11 +23,12 @@ const ModalAddTask: React.FC<IModalProps> = ({
   isLoadAddTask,
   onClose,
   onCancel,
+  selectedTask,
 }): JSX.Element => {
   return (
     <Modal
       isOpen={isOpen}
-      title={"Add Task"}
+      title={selectedTask ? "Upadate Task" : "Add Task"}
       width="w-[300px]"
       onClose={onClose}
     >

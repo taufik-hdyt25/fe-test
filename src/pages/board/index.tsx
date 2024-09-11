@@ -35,7 +35,8 @@ const BoardPage: React.FC = (): JSX.Element => {
     openModalUpdate,
     handleMoveTaskLeft,
     handleMoveTaskRight,
-    handleDeleteBoard,
+
+    selectedTask,
     isLoadDeleteBoard,
   } = useBoardAction();
 
@@ -89,6 +90,7 @@ const BoardPage: React.FC = (): JSX.Element => {
           isLoadAddTask={isLoadAddTask}
           isOpen={isModalAddTask}
           formik={formikTask}
+          selectedTask={selectedTask}
           onCancel={() => {
             setIsModalAddTask(false);
             setSelectedBoard(null);
@@ -136,11 +138,7 @@ const BoardPage: React.FC = (): JSX.Element => {
           isOpen={isOpenAlert}
           isLoading={isLoadDeleteTask || isLoadDeleteBoard}
           onOK={() => {
-            if (selectedBoard) {
-              handleDeleteBoard();
-            } else {
-              handleDeleteTask();
-            }
+            handleDeleteTask();
           }}
           setIsOpen={() => setIsOpenAlert(false)}
           onClose={() => {

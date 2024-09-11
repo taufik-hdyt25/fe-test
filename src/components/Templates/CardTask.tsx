@@ -58,7 +58,7 @@ const CardTask: React.FC<ICardTask> = ({
           )}
         </div>
         <div>
-          <Popover>
+          <Popover onOpenChange={(e) => console.log(e)}>
             <PopoverTrigger>
               <FaEllipsis
                 onClick={() => {

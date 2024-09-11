@@ -248,5 +248,6 @@ export const useBoardAction = () => {
     handleMoveTaskRight,
     handleDeleteBoard,
     isLoadDeleteBoard,
+    selectedTask,
   };
 };
