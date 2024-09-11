@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { IBoard } from "@/interfaces/board.interfaces";
 import { ITaskInBoard } from "@/interfaces/task.interfaces";
-import { formatMonth } from "@/utils/format-date";
+import { formatFullDate, formatMonth } from "@/utils/format-date";
 import { FaPlusCircle } from "react-icons/fa";
 import CardTask from "./CardTask";
 
@@ -69,12 +69,16 @@ const CardBoard: React.FC<ICardProps> = ({
         </div>
       )}
 
-      <div
-        className="mt-4 flex items-center gap-1 cursor-pointer"
-        onClick={onOpenModalTask}
-      >
-        <FaPlusCircle size={20} />
-        <div className="text-sm">New Task</div>
+      <div className="flex items-center justify-between mt-4">
+        <div
+          className="flex items-center gap-1 cursor-pointer"
+          onClick={onOpenModalTask}
+        >
+          <FaPlusCircle size={20} />
+          <div className="text-sm">New Task</div>
+        </div>
+
+        <div className="text-xs">{formatFullDate(board?.created_at)}</div>
       </div>
     </div>
   );

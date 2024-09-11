@@ -1,5 +1,6 @@
 import Modal from "@/components/Moleculs/Modal";
 import { Button } from "@/components/ui/button";
+import { IBoard } from "@/interfaces/board.interfaces";
 import { FaSpinner } from "react-icons/fa";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -10,6 +11,7 @@ interface IModalProps {
   setIsOpen?: () => void;
   onOK?: () => void;
   isLoading?: boolean;
+  selectedBoard: IBoard | null;
 }
 
 const ModalDelete = ({
@@ -18,11 +20,14 @@ const ModalDelete = ({
   setIsOpen,
   onOK,
   isLoading,
+  selectedBoard,
 }: IModalProps) => {
   return (
     <Modal isOpen={isOpen} title="Delete" onClose={onClose}>
       <div className="text-xl text-left">
-        Are you sure want to delete this board ?
+        {selectedBoard
+          ? "Are you sure want to delete this Board ?"
+          : "Are you sure want to delete this Task ?"}
       </div>
       <div className="gap-5 flex justify-end mt-6">
         <Button onClick={setIsOpen} className="bg-blue-400">

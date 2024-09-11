@@ -35,6 +35,8 @@ const BoardPage: React.FC = (): JSX.Element => {
     openModalUpdate,
     handleMoveTaskLeft,
     handleMoveTaskRight,
+    handleDeleteBoard,
+    isLoadDeleteBoard,
   } = useBoardAction();
 
   const handleLogout = () => {
@@ -110,20 +112,36 @@ const BoardPage: React.FC = (): JSX.Element => {
 
       {isModalAddBoard && (
         <ModalAddBoard
+          setIsOpenAlert={() => {
+            setIsOpenAlert(true);
+            setModalAddBoard(false);
+          }}
           setSelectedBoard={() => setSelectedBoard(null)}
           selectedBoard={selectedBoard}
           formik={formikBoard}
           isLoadAdd={isLoadAdd}
           isOpen={isModalAddBoard}
           setOpenModal={setModalAddBoard}
+          onCancel={() => {
+            setSelectedBoard(null);
+            setModalAddBoard(false);
+            formikBoard.resetForm();
+          }}
         />
       )}
 
       {isOpenAlert && (
         <ModalDelete
+          selectedBoard={selectedBoard}
           isOpen={isOpenAlert}
-          isLoading={isLoadDeleteTask}
-          onOK={handleDeleteTask}
+          isLoading={isLoadDeleteTask || isLoadDeleteBoard}
+          onOK={() => {
+            if (selectedBoard) {
+              handleDeleteBoard();
+            } else {
+              handleDeleteTask();
+            }
+          }}
           setIsOpen={() => setIsOpenAlert(false)}
           onClose={() => {
             setIsOpenAlert(false);

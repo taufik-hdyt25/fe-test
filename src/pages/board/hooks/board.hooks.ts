@@ -16,6 +16,7 @@ export const useBoardAction = () => {
   const [isOpenAlert, setIsOpenAlert] = useState(false);
   const [selectedTask, setSelectedTask] = useState<ITaskInBoard | null>(null);
   const [isLoadDeleteTask, setIsLoadDeleteTask] = useState(false);
+  const [isLoadDeleteBoard, setIsLoadDeleteBoard] = useState(false);
 
   const [boards, setBoards] = useState<IBoard[] | null>(null);
 
@@ -131,6 +132,7 @@ export const useBoardAction = () => {
       await API.delete(`/task/${selectedTask?.id}`);
       setIsLoadDeleteTask(false);
       setIsOpenAlert(false);
+      setSelectedTask(null);
       handleGetBoard();
     } catch (error) {
       console.log(error);
@@ -162,6 +164,8 @@ export const useBoardAction = () => {
           board_id: leftId,
         });
         handleGetBoard();
+        setSelectedBoard(null);
+        setSelectedTask(null);
       } else {
         toast({ title: "Cannot be moved", className: "bg-red-500 text-white" });
       }
@@ -178,11 +182,36 @@ export const useBoardAction = () => {
           board_id: rightId,
         });
         handleGetBoard();
+        setSelectedBoard(null);
+        setSelectedTask(null);
       } else {
         toast({ title: "Cannot be moved", className: "bg-red-500 text-white" });
       }
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const handleDeleteBoard = async () => {
+    setIsLoadDeleteBoard(true);
+    try {
+      if (selectedBoard) {
+        const resp = await API.delete(`/board/${selectedBoard?.id}`);
+        setIsOpenAlert(false);
+        toast({
+          title: resp?.data?.message,
+          className: "bg-green-500",
+        });
+      }
+      setIsLoadDeleteBoard(false);
+      handleGetBoard();
+    } catch (error) {
+      console.log(error);
+      setIsLoadDeleteBoard(false);
+      toast({
+        title: "Internal server Error",
+        className: "bg-red-500",
+      });
     }
   };
 
@@ -217,5 +246,7 @@ export const useBoardAction = () => {
     openModalUpdate,
     handleMoveTaskLeft,
     handleMoveTaskRight,
+    handleDeleteBoard,
+    isLoadDeleteBoard,
   };
 };

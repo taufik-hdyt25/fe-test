@@ -4,6 +4,7 @@ import Modal from "@/components/Moleculs/Modal";
 import { Button } from "@/components/ui/button";
 import { IBoard } from "@/interfaces/board.interfaces";
 import { FaSpinner } from "react-icons/fa";
+import { AiFillDelete } from "react-icons/ai";
 
 interface IModalProps {
   isOpen: boolean;
@@ -12,6 +13,8 @@ interface IModalProps {
   selectedBoard?: IBoard | null;
   setOpenModal: (i: boolean) => void;
   setSelectedBoard: () => void;
+  setIsOpenAlert: () => void;
+  onCancel: () => void;
 }
 const ModalAddBoard: React.FC<IModalProps> = ({
   isOpen,
@@ -20,11 +23,13 @@ const ModalAddBoard: React.FC<IModalProps> = ({
   isLoadAdd,
   selectedBoard,
   setSelectedBoard,
+  setIsOpenAlert,
+  onCancel,
 }): JSX.Element => {
   return (
     <Modal
       isOpen={isOpen}
-      title={"Add Board"}
+      title={selectedBoard ? "Update Board" : "Add Board"}
       onClose={() => {
         setOpenModal(false);
         setSelectedBoard();
@@ -71,19 +76,34 @@ const ModalAddBoard: React.FC<IModalProps> = ({
           />
         </div>
 
-        <div className="gap-5 flex justify-end">
-          <Button
-            onClick={() => {
-              setOpenModal(false);
-              formik.resetForm();
-            }}
-            className="bg-red-400"
-          >
-            Cancel
-          </Button>
-          <Button disabled={isLoadAdd} type="submit" className="bg-blue-400">
-            {isLoadAdd ? <FaSpinner className="animate-spin mr-2" /> : "Submit"}
-          </Button>
+        <div
+          className={`gap-5 flex ${
+            selectedBoard ? "justify-between" : "justify-end"
+          } items-center`}
+        >
+          {selectedBoard && (
+            <div>
+              <AiFillDelete
+                onClick={setIsOpenAlert}
+                size={24}
+                color="red"
+                className="cursor-pointer"
+              />
+            </div>
+          )}
+
+          <div className="flex gap-5">
+            <Button onClick={onCancel} className="bg-red-400">
+              Cancel
+            </Button>
+            <Button disabled={isLoadAdd} type="submit" className="bg-blue-400">
+              {isLoadAdd ? (
+                <FaSpinner className="animate-spin mr-2" />
+              ) : (
+                "Submit"
+              )}
+            </Button>
+          </div>
         </div>
       </form>
     </Modal>
