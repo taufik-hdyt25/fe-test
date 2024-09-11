@@ -7,6 +7,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 interface ICardTask {
   task?: ITaskInBoard;
   setSelectedTask: () => void;
+  setSelectedBoard: () => void;
   onOpenAlert?: () => void;
   onOpenModalUpdate?: () => void;
   moveLeftTask?: () => void;
@@ -15,6 +16,7 @@ interface ICardTask {
 const CardTask: React.FC<ICardTask> = ({
   task,
   setSelectedTask,
+  setSelectedBoard,
   onOpenAlert,
   onOpenModalUpdate,
   moveLeftTask,
@@ -59,7 +61,10 @@ const CardTask: React.FC<ICardTask> = ({
           <Popover>
             <PopoverTrigger>
               <FaEllipsis
-                onClick={setSelectedTask}
+                onClick={() => {
+                  setSelectedBoard();
+                  setSelectedTask();
+                }}
                 className="cursor-pointer"
                 size={20}
               />

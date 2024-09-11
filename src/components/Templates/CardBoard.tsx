@@ -10,11 +10,12 @@ interface ICardProps {
   onOpenModalTask?: () => void;
   setSelectedTask: (i: ITaskInBoard) => void;
   setOpenModalBoard: () => void;
-  updatetask?: () => void;
   moveLeftTask?: () => void;
   moveRightTask?: () => void;
   onOpenAlert: (i: ITaskInBoard) => void;
   openModalUpdate: (a: ITaskInBoard) => void;
+  idx?: number;
+  setSelectedBoard: () => void;
 }
 const CardBoard: React.FC<ICardProps> = ({
   board,
@@ -25,9 +26,17 @@ const CardBoard: React.FC<ICardProps> = ({
   moveRightTask,
   onOpenAlert,
   openModalUpdate,
+  idx,
+  setSelectedBoard,
 }): JSX.Element => {
   return (
-    <div className="w-[306px] bg-[#FFF9FB] border border-[pink] p-[12px] rounded-sm h-fit flex-shrink-0">
+    <div
+      className={`w-[306px] ${
+        idx && idx % 2 === 1 ? "bg-[#FFF9FB]" : "bg-[#F7FAFF]"
+      } border ${
+        idx && idx % 2 === 1 ? "border-[pink]" : "border-[#2F54EB]"
+      }  p-[12px] rounded-sm h-fit flex-shrink-0`}
+    >
       <div
         className="p-2 text-xs border border-[pink] w-fit text-[#EB2F96] cursor-pointer"
         onClick={setOpenModalBoard}
@@ -41,10 +50,10 @@ const CardBoard: React.FC<ICardProps> = ({
       {board?.task?.length ? (
         <div className="flex flex-col gap-2">
           {board?.task?.map((item: ITaskInBoard, index: number) => (
-            <div>
+            <div key={index + "task"}>
               <CardTask
+                setSelectedBoard={setSelectedBoard}
                 setSelectedTask={() => setSelectedTask(item)}
-                key={index + "task"}
                 task={item}
                 onOpenAlert={() => onOpenAlert(item)}
                 onOpenModalUpdate={() => openModalUpdate(item)}

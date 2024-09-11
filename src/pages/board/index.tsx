@@ -33,16 +33,9 @@ const BoardPage: React.FC = (): JSX.Element => {
     handleDeleteTask,
     isLoadDeleteTask,
     openModalUpdate,
+    handleMoveTaskLeft,
+    handleMoveTaskRight,
   } = useBoardAction();
-
-  // const handleMoveTask = async (body: IMoveTask) => {
-  //   try {
-  //     const resp = await API.post("/task/move", body);
-  //     console.log(resp?.data);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -69,11 +62,14 @@ const BoardPage: React.FC = (): JSX.Element => {
       <div className="flex gap-3 mt-10 overflow-x-auto px-5">
         {boards?.map((item: IBoard, idx: number) => (
           <CardBoard
-            key={idx + "board"}
+            key={idx + "boards"}
             board={item}
+            setSelectedBoard={() => setSelectedBoard(item)}
             setSelectedTask={setSelectedTask}
             onOpenAlert={onOpenAlert}
             openModalUpdate={openModalUpdate}
+            moveLeftTask={handleMoveTaskLeft}
+            moveRightTask={handleMoveTaskRight}
             setOpenModalBoard={() => {
               setSelectedBoard(item);
               setModalAddBoard(true);

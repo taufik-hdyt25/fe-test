@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+
+import { useToast } from "@/hooks/use-toast";
 import { IBoard, IPostBoard } from "@/interfaces/board.interfaces";
 import { IPostTask, ITaskInBoard } from "@/interfaces/task.interfaces";
 import { API } from "@/lib/axios";
@@ -7,6 +9,7 @@ import { useEffect, useState } from "react";
 import * as Yup from "yup";
 
 export const useBoardAction = () => {
+  const { toast } = useToast();
   const [selectedBoard, setSelectedBoard] = useState<IBoard | null>(null);
   const [isModalAddTask, setIsModalAddTask] = useState<boolean>(false);
   const [isModalAddBoard, setModalAddBoard] = useState<boolean>(false);
@@ -135,6 +138,54 @@ export const useBoardAction = () => {
     }
   };
 
+  const findAdjacentBoardIds = (boardId: string | undefined) => {
+    if (!boards) {
+      return { leftId: null, rightId: null };
+    }
+    const index = boards.findIndex((board) => board.id === boardId);
+    if (index === -1) {
+      return { leftId: null, rightId: null };
+    }
+    const leftId = index > 0 ? boards[index - 1].id : null;
+    const rightId = index < boards.length - 1 ? boards[index + 1].id : null;
+
+    return { leftId, rightId };
+  };
+
+  const { rightId, leftId } = findAdjacentBoardIds(selectedBoard?.id);
+
+  const handleMoveTaskLeft = async () => {
+    try {
+      if (selectedBoard && selectedTask && leftId !== null) {
+        await API.post("/task/move", {
+          id: selectedTask?.id,
+          board_id: leftId,
+        });
+        handleGetBoard();
+      } else {
+        toast({ title: "Cannot be moved", className: "bg-red-500 text-white" });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleMoveTaskRight = async () => {
+    try {
+      if (selectedBoard && selectedTask && rightId !== null) {
+        await API.post("/task/move", {
+          id: selectedTask?.id,
+          board_id: rightId,
+        });
+        handleGetBoard();
+      } else {
+        toast({ title: "Cannot be moved", className: "bg-red-500 text-white" });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     handleGetBoard();
   }, []);
@@ -158,12 +209,13 @@ export const useBoardAction = () => {
     isLoadAddTask,
     setIsLoadAddTask,
     setSelectedTask,
-    handleGetBoard,
     onOpenAlert,
     isOpenAlert,
     setIsOpenAlert,
     isLoadDeleteTask,
     handleDeleteTask,
     openModalUpdate,
+    handleMoveTaskLeft,
+    handleMoveTaskRight,
   };
 };
