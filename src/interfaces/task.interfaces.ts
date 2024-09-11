@@ -10,6 +10,15 @@ export interface ITask {
   board: IBoard;
 }
 
+export interface ITaskInBoard {
+  id: string;
+  name: string;
+  progress_percentage: number | undefined;
+  board_id: string;
+  created_at: string;
+  updated_at: string | null;
+}
+
 export interface IResponseTasks {
   statusCode: number;
   message: string;
@@ -19,7 +28,7 @@ export interface IResponseTasks {
 export interface IPostTask {
   name: string;
   progress_percentage: number;
-  board_id: string;
+  board_id: string | undefined;
 }
 
 export interface IDetailBoardTask {

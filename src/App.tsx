@@ -1,8 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import AuthPage from "./pages/auth";
+
 import NotFoundPage from "./pages/not-found";
-import BoardPage from "./pages/board";
-import TaskPage from "./pages/tasks";
+import { AuthPage, BoardPage } from "./pages";
 
 interface AuthGuardProps {
   children: React.ReactNode;
@@ -41,7 +40,6 @@ function App() {
             <AuthGuard>
               <Routes>
                 <Route path="/" element={<BoardPage />} />
-                <Route path="/task" element={<TaskPage />} />
                 <Route path="*" element={<NotFoundPage />} />
               </Routes>
             </AuthGuard>
