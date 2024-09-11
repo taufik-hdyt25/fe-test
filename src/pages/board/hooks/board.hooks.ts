@@ -40,10 +40,10 @@ export const useBoardAction = () => {
   const handleMoveTask = async (result: DropResult) => {
     const { source, destination, draggableId } = result;
 
-    // Cek jika tidak ada destination (drop di luar area yang valid)
+    // Jika tidak ada destination (drop di luar droppable area)
     if (!destination) return;
 
-    // Cek jika posisi tidak berubah (drop di posisi yang sama)
+    // Jika posisi tidak berubah (drop di posisi yang sama)
     if (
       source.droppableId === destination.droppableId &&
       source.index === destination.index
@@ -51,7 +51,6 @@ export const useBoardAction = () => {
       return;
     }
 
-    // Temukan board asal dan board tujuan
     const sourceBoard = boards.find((board) => board.id === source.droppableId);
     const destinationBoard = boards.find(
       (board) => board.id === destination.droppableId
@@ -62,40 +61,68 @@ export const useBoardAction = () => {
       return;
     }
 
-    // Task yang ingin dipindahkan dari source board
+    // Task yang akan dipindahkan
     const taskToMove = sourceBoard.task[source.index];
 
-    // Hapus task dari board asal
-    const updatedSourceBoard = {
-      ...sourceBoard,
-      task: sourceBoard.task.filter((_, index) => index !== source.index),
-    };
+    // Jika task dipindahkan di dalam board yang sama
+    if (sourceBoard.id === destinationBoard.id) {
+      const updatedTasks = Array.from(sourceBoard.task);
+      // Hapus task dari posisi lama
+      updatedTasks.splice(source.index, 1);
+      // Tambahkan task ke posisi baru
+      updatedTasks.splice(destination.index, 0, taskToMove);
 
-    // Tambahkan task ke board tujuan pada index yang diinginkan
-    const updatedDestinationBoard = {
-      ...destinationBoard,
-      task: [
-        ...destinationBoard.task.slice(0, destination.index),
-        taskToMove,
-        ...destinationBoard.task.slice(destination.index),
-      ],
-    };
+      // Perbarui state board untuk board yang sama
+      const updatedBoard = {
+        ...sourceBoard,
+        task: updatedTasks,
+      };
 
-    // Update state boards dengan board yang sudah diperbarui
-    setBoards((prevBoards) =>
-      prevBoards.map((board) =>
-        board.id === sourceBoard.id
-          ? updatedSourceBoard
-          : board.id === destinationBoard.id
-          ? updatedDestinationBoard
-          : board
-      )
-    );
+      setBoards((prevBoards) =>
+        prevBoards.map((board) =>
+          board.id === sourceBoard.id ? updatedBoard : board
+        )
+      );
 
-    await API.post("/task/move", {
-      id: draggableId,
-      board_id: destination.droppableId,
-    });
+      // Opsional: Panggil API untuk memperbarui urutan task di backend
+      await API.post("/task/move", {
+        id: draggableId,
+        board_id: sourceBoard.id,
+        newIndex: destination.index,
+      });
+    } else {
+      // Jika task dipindahkan ke board lain
+      const updatedSourceBoard = {
+        ...sourceBoard,
+        task: sourceBoard.task.filter((_, index) => index !== source.index),
+      };
+
+      const updatedDestinationBoard = {
+        ...destinationBoard,
+        task: [
+          ...destinationBoard.task.slice(0, destination.index),
+          taskToMove,
+          ...destinationBoard.task.slice(destination.index),
+        ],
+      };
+
+      // Update state board yang lama dan baru
+      setBoards((prevBoards) =>
+        prevBoards.map((board) =>
+          board.id === sourceBoard.id
+            ? updatedSourceBoard
+            : board.id === destinationBoard.id
+            ? updatedDestinationBoard
+            : board
+        )
+      );
+
+      // Panggil API untuk memperbarui backend
+      await API.post("/task/move", {
+        id: draggableId,
+        board_id: destination.droppableId,
+      });
+    }
   };
 
   const handleSubmit = async (body: IPostBoard) => {

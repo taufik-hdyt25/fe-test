@@ -11,7 +11,7 @@ interface IInputProps extends InputProps {
 const InputCustom: React.FC<IInputProps> = ({
   label,
   htmlFor,
-  placeHolder,
+  // placeHolder,
   error,
   isRequired,
   ...props
@@ -24,7 +24,7 @@ const InputCustom: React.FC<IInputProps> = ({
           {isRequired && <span className="text-red-500">*</span>}
         </Label>
       )}
-      <Input placeholder={placeHolder} {...props} />
+      <Input {...props} />
       {error && <div className="text-left text-xs text-red-400">{error}</div>}
     </div>
   );

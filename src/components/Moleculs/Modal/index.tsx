@@ -23,7 +23,7 @@ const Modal: React.FC<ModalProps> = ({
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog
         as="div"
-        className="fixed inset-0 z-50 overflow-y-auto"
+        className="fixed  inset-0 z-50 overflow-y-auto"
         onClose={onClose}
       >
         <div className="flex items-center justify-center min-h-screen p-4 text-center">
