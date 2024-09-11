@@ -7,6 +7,7 @@ import { ModalAddTask } from "./components";
 import ModalAddBoard from "./components/ModalAddBoard";
 import ModalDelete from "./components/ModalDelete";
 import { useBoardAction } from "./hooks/board.hooks";
+import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 
 const BoardPage: React.FC = (): JSX.Element => {
   const navigate = useNavigate();
@@ -38,14 +39,20 @@ const BoardPage: React.FC = (): JSX.Element => {
 
     selectedTask,
     isLoadDeleteBoard,
+    handleMoveTask,
   } = useBoardAction();
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/auth");
   };
+
+  const handleOnDragEnd = (result: DropResult) => {
+    handleMoveTask(result);
+  };
+
   return (
-    <div className=" h-screen">
+    <div className="h-screen">
       <div className="flex justify-between my-3 px-5">
         <div className="text-lg font-semibold text-blue-400">TODO</div>
 
@@ -63,26 +70,41 @@ const BoardPage: React.FC = (): JSX.Element => {
       </div>
 
       <div className="flex gap-3 mt-10 overflow-x-auto px-5">
-        {boards?.map((item: IBoard, idx: number) => (
-          <CardBoard
-            key={idx + "boards"}
-            board={item}
-            setSelectedBoard={() => setSelectedBoard(item)}
-            setSelectedTask={setSelectedTask}
-            onOpenAlert={onOpenAlert}
-            openModalUpdate={openModalUpdate}
-            moveLeftTask={handleMoveTaskLeft}
-            moveRightTask={handleMoveTaskRight}
-            setOpenModalBoard={() => {
-              setSelectedBoard(item);
-              setModalAddBoard(true);
-            }}
-            onOpenModalTask={() => {
-              setSelectedBoard(item);
-              setIsModalAddTask(true);
-            }}
-          />
-        ))}
+        <DragDropContext onDragEnd={handleOnDragEnd}>
+          {boards?.map((item: IBoard, idx: number) => (
+            <Droppable droppableId={item.id} key={item.id}>
+              {(provided) => (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                  className="flex-shrink-0"
+                >
+                  <CardBoard
+                    disableLeft={idx === 0}
+                    disableRight={idx === boards.length - 1}
+                    key={idx + "boards"}
+                    board={item}
+                    setSelectedBoard={() => setSelectedBoard(item)}
+                    setSelectedTask={setSelectedTask}
+                    onOpenAlert={onOpenAlert}
+                    openModalUpdate={openModalUpdate}
+                    moveLeftTask={handleMoveTaskLeft}
+                    moveRightTask={handleMoveTaskRight}
+                    setOpenModalBoard={() => {
+                      setSelectedBoard(item);
+                      setModalAddBoard(true);
+                    }}
+                    onOpenModalTask={() => {
+                      setSelectedBoard(item);
+                      setIsModalAddTask(true);
+                    }}
+                  />
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          ))}
+        </DragDropContext>
       </div>
 
       {isModalAddTask && (

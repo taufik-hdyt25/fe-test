@@ -1,11 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 import { useToast } from "@/hooks/use-toast";
 import { IBoard, IPostBoard } from "@/interfaces/board.interfaces";
 import { IPostTask, ITaskInBoard } from "@/interfaces/task.interfaces";
 import { API } from "@/lib/axios";
 import { useFormik } from "formik";
 import { useEffect, useState } from "react";
+import { DropResult } from "react-beautiful-dnd";
 import * as Yup from "yup";
 
 export const useBoardAction = () => {
@@ -18,7 +17,7 @@ export const useBoardAction = () => {
   const [isLoadDeleteTask, setIsLoadDeleteTask] = useState(false);
   const [isLoadDeleteBoard, setIsLoadDeleteBoard] = useState(false);
 
-  const [boards, setBoards] = useState<IBoard[] | null>(null);
+  const [boards, setBoards] = useState<IBoard[]>([]);
 
   const [isLoadBoard, setIsLoadBoard] = useState<boolean>(false);
   const [isLoadAdd, setIsLoadAdd] = useState<boolean>(false);
@@ -35,6 +34,67 @@ export const useBoardAction = () => {
       console.log(error);
       setIsLoadBoard(false);
     }
+  };
+
+  const handleMoveTask = async (result: DropResult) => {
+    const { source, destination, draggableId } = result;
+
+    // Cek jika tidak ada destination (drop di luar area yang valid)
+    if (!destination) return;
+
+    // Cek jika posisi tidak berubah (drop di posisi yang sama)
+    if (
+      source.droppableId === destination.droppableId &&
+      source.index === destination.index
+    ) {
+      return;
+    }
+
+    // Temukan board asal dan board tujuan
+    const sourceBoard = boards.find((board) => board.id === source.droppableId);
+    const destinationBoard = boards.find(
+      (board) => board.id === destination.droppableId
+    );
+
+    if (!sourceBoard || !destinationBoard) {
+      console.error("Board tidak ditemukan!");
+      return;
+    }
+
+    // Task yang ingin dipindahkan dari source board
+    const taskToMove = sourceBoard.task[source.index];
+
+    // Hapus task dari board asal
+    const updatedSourceBoard = {
+      ...sourceBoard,
+      task: sourceBoard.task.filter((_, index) => index !== source.index),
+    };
+
+    // Tambahkan task ke board tujuan pada index yang diinginkan
+    const updatedDestinationBoard = {
+      ...destinationBoard,
+      task: [
+        ...destinationBoard.task.slice(0, destination.index),
+        taskToMove,
+        ...destinationBoard.task.slice(destination.index),
+      ],
+    };
+
+    // Update state boards dengan board yang sudah diperbarui
+    setBoards((prevBoards) =>
+      prevBoards.map((board) =>
+        board.id === sourceBoard.id
+          ? updatedSourceBoard
+          : board.id === destinationBoard.id
+          ? updatedDestinationBoard
+          : board
+      )
+    );
+
+    await API.post("/task/move", {
+      id: draggableId,
+      board_id: destination.droppableId,
+    });
   };
 
   const handleSubmit = async (body: IPostBoard) => {
@@ -249,5 +309,6 @@ export const useBoardAction = () => {
     handleDeleteBoard,
     isLoadDeleteBoard,
     selectedTask,
+    handleMoveTask,
   };
 };
