@@ -1,2 +1,2 @@
-export { default as AuthPage } from "./auth/index";
-export { default as BoardPage } from "./board/index";
+export { default as HomePage } from "./home/index";
+export { default as CustomerPage } from "./customer/index";

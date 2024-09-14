@@ -1,0 +1,17 @@
+export const bgHero = "../../assets/bg-hero.png";
+export const ic_calender = "../../assets/ic_calendar_today.png";
+export const ic_chat_bubble = "../../assets/ic_chat_bubble_outline.png";
+export const ic_devices_other = "../../assets/ic_devices_other.png";
+export const ic_devices = "../../assets/ic_devices.png";
+export const ic_featured_play = "../../assets/ic_featured_play_list.png";
+export const ic_library_books = "../../assets/ic_library_books.png";
+export const ic_messages = "../../assets/ic_messages.png";
+export const ic_templat = "../../assets/ic_message.png";
+export const ic_people = "../../assets/ic_people.png";
+export const ic_person = "../../assets/ic_person.png";
+export const ic_playlist_add = "../../assets/ic_playlist_add.png";
+export const ic_reply = "../../assets/ic_reply.png";
+export const ic_rss_feed = "../../assets/ic_rss_feed.png";
+export const ic_settings = "../../assets/ic_settings_input_composite.png";
+export const ic_setting = "../../assets/ic_settings.png";
+export const ic_analytic = "../../assets/ic_show_chart.png";
